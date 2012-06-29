@@ -1,22 +1,5 @@
 
 package redmineissuemanager;
-/*
-import hudson.Launcher;
-import hudson.Extension;
-import hudson.util.FormValidation;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
-import hudson.model.AbstractProject;
-import hudson.tasks.Builder;
-import hudson.tasks.Publisher;
-import hudson.tasks.Recorder;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.BuildStepMonitor;
-import net.sf.json.JSONObject;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.QueryParameter;
-*/
 
 import hudson.Extension;
 import hudson.FilePath;
@@ -44,6 +27,8 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import redmineissuemanager.RedmineIssueCreator.*;
+
 public class RedmineIssueManager extends Recorder{
 
 	private final String name;
@@ -56,21 +41,28 @@ public class RedmineIssueManager extends Recorder{
 	public String getName(){
 		return name;
 	}
-/**
-	public String getProject(){
-		return project;
-	}
-*/
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener)
         throws InterruptedException, IOException {
-        List<String> buildLog = build.getLog(100);
+        List<String> buildLog = build.getLog(1000);
         listener.getLogger().println("Performing Redmine issue manager...");
 
         Result pr = build.getResult();
 	System.out.println("PRINTING");
 	System.out.println(this.name);
+	System.out.println(build.getDisplayName());
+	System.out.println(build.getId());
 	System.out.println(pr);
+	System.out.println(buildLog);
+	
+	System.out.println("CREATING ISSUE");
+	ArrayList<String> args = new ArrayList<String>();
+	args.add(this.name);
+	args.add(build.getDisplayName());
+	args.add(build.getId());
+	new RedmineIssueCreator(args);	
+
         listener.getLogger().println("Finished RUNNING");
         return true;
     }

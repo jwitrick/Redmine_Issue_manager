@@ -3,14 +3,48 @@
  *
  */
 
+package redmineissuemanager;
+
 import java.io.IOException;
 import java.net .URISyntaxException;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.taskadapter.redmineapi.*;
 import com.taskadapter.redmineapi.bean.*;
 
-public class redmine {
+public class RedmineIssueCreator {
+
+
+	private String r_host = null;
+	private String api_key = null;
+	private String project_key = null;
+	private RedmineManager mgr = null;
+
+	public RedmineIssueCreator(ArrayList<String> args){
+		this.r_host = "";
+		this.api_key = "";
+		this.project_key = args.get(0);
+
+		this.createConnection();
+		this.createIssue(args);
+	}
+
+	public void createConnection(){
+		this.mgr = new RedmineManager(this.r_host, this.api_key);
+	}
+
+	public boolean createIssue(ArrayList<String> args){
+		try{
+			Issue new_issue = new Issue();
+			new_issue.setSubject(args.get(1) +"---" +args.get(2));
+			Issue new_issue2 = this.mgr.createIssue(this.project_key, new_issue);
+		} catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
 	private static String redmineHost = null;
 	private static String apiAccessKey = null;
